@@ -1,24 +1,35 @@
 [package]
-name = "openapi"
-version = "0.1.5"
 authors = ["softprops <d.tangren@gmail.com>"]
 description = "Rust bindings for openapi schemas"
 documentation = "https://softprops.github.io/openapi"
+edition = "2018"
 homepage = "https://github.com/softprops/openapi"
-repository = "https://github.com/softprops/openapi"
 keywords = ["openapi", "swagger"]
 license = "MIT"
-edition = "2018"
+name = "openapi"
+repository = "https://github.com/softprops/openapi"
+version = "0.1.5"
 
 [dependencies]
 error-chain = "0.10"
 failure = "0.1"
 semver = "0.9"
-serde = { version = "1.0", features = ["derive"] }
-serde_json = "1.0"
-serde_yaml = "0.8"
 url = "1.7"
 url_serde = "0.2"
+
+[dependencies.serde]
+features = ["derive"]
+version = "1.0"
+
+[dependencies.indexmap]
+version = "1.3"
+features = ["serde-1"]
+
+[dependencies.serde_json]
+version = "1.0"
+
+[dependencies.serde_yaml]
+version = "0.8"
 
 [dev-dependencies]
 pretty_assertions = "0.5"

@@ -3,7 +3,7 @@
 use semver;
 use serde::{Deserialize, Serialize};
 use serde_json;
-use std::collections::{BTreeMap, HashMap};
+use indexmap::IndexMap;
 use url;
 use url_serde;
 
@@ -55,7 +55,7 @@ pub struct Spec {
     /// [`Server Object`](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#serverObject)
     /// in order to construct the full URL. The Paths MAY be empty, due to
     /// [ACL constraints](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#securityFiltering).
-    pub paths: BTreeMap<String, PathItem>,
+    pub paths: IndexMap<String, PathItem>,
 
     /// An element to hold various schemas for the specification.
     #[serde(skip_serializing_if = "Option::is_none")]
@@ -166,7 +166,7 @@ pub struct Server {
     /// A map between a variable name and its value. The value is used for substitution in
     /// the server's URL template.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub variables: Option<BTreeMap<String, ServerVariable>>,
+    pub variables: Option<IndexMap<String, ServerVariable>>,
 }
 
 /// An object representing a Server Variable for server URL template substitution.
@@ -320,7 +320,7 @@ pub struct Operation {
     /// response for a successful operation call.
     ///
     /// See <https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#responsesObject>.
-    pub responses: BTreeMap<String, Response>,
+    pub responses: IndexMap<String, Response>,
 
     /// A map of possible out-of band callbacks related to the parent operation. The key is
     /// a unique identifier for the Callback Object. Each value in the map is a
@@ -330,7 +330,7 @@ pub struct Operation {
     /// an expression, evaluated at runtime, that identifies a URL to use for the
     /// callback operation.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub callbacks: Option<BTreeMap<String, Callback>>,
+    pub callbacks: Option<IndexMap<String, Callback>>,
 
     /// Declares this operation to be deprecated. Consumers SHOULD refrain from usage
     /// of the declared operation. Default value is `false`.
@@ -452,7 +452,7 @@ pub struct Schema {
     pub items: Option<Box<Schema>>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub properties: Option<BTreeMap<String, Schema>>,
+    pub properties: Option<IndexMap<String, Schema>>,
 
     #[serde(skip_serializing_if = "Option::is_none", rename = "readOnly")]
     pub read_only: Option<bool>,
@@ -558,7 +558,7 @@ pub struct Schema {
 
     /// [Specification extensions](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#specificationExtensions)
     #[serde(flatten)]
-    pub extensions: HashMap<String, String>,
+    pub extensions: IndexMap<String, String>,
 }
 
 /// Describes a single response from an API Operation, including design-time, static `links`
@@ -576,20 +576,20 @@ pub struct Response {
     /// insensitive. If a response header is defined with the name `"Content-Type"`, it SHALL
     /// be ignored.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub headers: Option<BTreeMap<String, ObjectOrReference<Header>>>,
+    pub headers: Option<IndexMap<String, ObjectOrReference<Header>>>,
 
     /// A map containing descriptions of potential response payloads. The key is a media type
     /// or [media type range](https://tools.ietf.org/html/rfc7231#appendix-D) and the value
     /// describes it. For responses that match multiple keys, only the most specific key is
     /// applicable. e.g. text/plain overrides text/*
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub content: Option<BTreeMap<String, MediaType>>,
+    pub content: Option<IndexMap<String, MediaType>>,
 
     /// A map of operations links that can be followed from the response. The key of the map
     /// is a short name for the link, following the naming constraints of the names for
     /// [Component Objects](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#componentsObject).
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub links: Option<BTreeMap<String, ObjectOrReference<Link>>>,
+    pub links: Option<IndexMap<String, ObjectOrReference<Link>>>,
     // TODO: Add "Specification Extensions" https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#specificationExtensions}
 }
 
@@ -653,7 +653,7 @@ pub struct RequestBody {
     /// [media type range](https://tools.ietf.org/html/rfc7231#appendix-D) and the
     /// value describes it. For requests that match multiple keys, only the most specific key
     /// is applicable. e.g. text/plain overrides text/*
-    pub content: BTreeMap<String, MediaType>,
+    pub content: IndexMap<String, MediaType>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub required: Option<bool>,
@@ -695,9 +695,9 @@ pub enum Link {
         // /// [parameter location](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#parameterIn)
         // /// `[{in}.]{name}` for operations that use the same parameter name in different
         // /// locations (e.g. path.id).
-        // parameters: BTreeMap<String, Any | {expression}>,
+        // parameters: IndexMap<String, Any | {expression}>,
         #[serde(skip_serializing_if = "Option::is_none")]
-        parameters: Option<BTreeMap<String, String>>,
+        parameters: Option<IndexMap<String, String>>,
 
         // FIXME: Implement
         // /// A literal value or
@@ -729,9 +729,9 @@ pub enum Link {
         // /// [parameter location](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#parameterIn)
         // /// `[{in}.]{name}` for operations that use the same parameter name in different
         // /// locations (e.g. path.id).
-        // parameters: BTreeMap<String, Any | {expression}>,
+        // parameters: IndexMap<String, Any | {expression}>,
         #[serde(skip_serializing_if = "Option::is_none")]
-        parameters: Option<BTreeMap<String, String>>,
+        parameters: Option<IndexMap<String, String>>,
 
         // FIXME: Implement
         // /// A literal value or
@@ -769,7 +769,7 @@ pub struct MediaType {
     /// only apply to `requestBody` objects when the media type is `multipart`
     /// or `application/x-www-form-urlencoded`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub encoding: Option<BTreeMap<String, Encoding>>,
+    pub encoding: Option<IndexMap<String, Encoding>>,
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize, PartialEq)]
@@ -785,7 +785,7 @@ pub enum MediaTypeExample {
     /// the `example` field. Furthermore, if referencing a `schema` which contains an
     /// example, the `examples` value SHALL override the example provided by the schema.
     Examples {
-        examples: BTreeMap<String, ObjectOrReference<Example>>,
+        examples: IndexMap<String, ObjectOrReference<Example>>,
     },
 }
 
@@ -806,7 +806,7 @@ pub struct Encoding {
     /// ignored in this section. This property SHALL be ignored if the request body
     /// media type is not a `multipart`.
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub headers: Option<BTreeMap<String, ObjectOrReference<Header>>>,
+    pub headers: Option<IndexMap<String, ObjectOrReference<Header>>>,
 
     /// Describes how a specific property value will be serialized depending on its type.
     /// See [Parameter Object](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.1.md#parameterObject)
@@ -920,7 +920,7 @@ pub struct ImplicitFlow {
     pub authorization_url: Url,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refresh_url: Option<Url>,
-    pub scopes: BTreeMap<String, String>,
+    pub scopes: IndexMap<String, String>,
 }
 
 /// Configuration details for a password OAuth Flow
@@ -932,7 +932,7 @@ pub struct PasswordFlow {
     token_url: Url,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refresh_url: Option<Url>,
-    pub scopes: BTreeMap<String, String>,
+    pub scopes: IndexMap<String, String>,
 }
 
 /// Configuration details for a client credentials OAuth Flow
@@ -944,7 +944,7 @@ pub struct ClientCredentialsFlow {
     token_url: Url,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refresh_url: Option<Url>,
-    pub scopes: BTreeMap<String, String>,
+    pub scopes: IndexMap<String, String>,
 }
 
 /// Configuration details for a authorization code OAuth Flow
@@ -957,7 +957,7 @@ pub struct AuthorizationCodeFlow {
     token_url: Url,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub refresh_url: Option<Url>,
-    pub scopes: BTreeMap<String, String>,
+    pub scopes: IndexMap<String, String>,
 }
 
 // TODO: Implement
