@@ -558,7 +558,7 @@ pub struct Schema {
 
     /// [Specification extensions](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#specificationExtensions)
     #[serde(flatten)]
-    pub extensions: IndexMap<String, String>,
+    pub extensions: IndexMap<String, serde_json::Value>,
 }
 
 /// Describes a single response from an API Operation, including design-time, static `links`
